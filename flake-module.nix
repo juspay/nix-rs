@@ -18,16 +18,7 @@ in
 
           rust-project.rustBuildInputs = lib.mkOption {
             type = lib.types.listOf lib.types.package;
-            # XXX: Do we need this?
-            default = lib.optionals pkgs.stdenv.isDarwin (
-              with pkgs.darwin.apple_sdk.frameworks; [
-                IOKit
-                Carbon
-                WebKit
-                Security
-                Cocoa
-              ]
-            );
+            default = [];
             description = "(Runtime) buildInputs for the cargo package";
           };
 
@@ -74,8 +65,7 @@ in
                 inherit src;
                 pname = name;
                 version = version;
-                buildInputs = [
-                ] ++ config.rust-project.rustBuildInputs;
+                buildInputs = config.rust-project.rustBuildInputs;
                 nativeBuildInputs = with pkgs;[
                   pkg-config
                   makeWrapper
