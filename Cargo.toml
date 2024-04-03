@@ -5,6 +5,7 @@ version = "0.3.1"
 license = "Apache-2.0"
 repository = "https://github.com/juspay/nix-rs"
 description = "Rust library for interacting with the Nix command"
+edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
