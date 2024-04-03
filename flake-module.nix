@@ -18,10 +18,8 @@ in
 
           rust-project.rustBuildInputs = lib.mkOption {
             type = lib.types.listOf lib.types.package;
-            default = [ ] ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-              webkitgtk_4_1
-              xdotool
-            ]) ++ lib.optionals pkgs.stdenv.isDarwin (
+            # XXX: Do we need this?
+            default = lib.optionals pkgs.stdenv.isDarwin (
               with pkgs.darwin.apple_sdk.frameworks; [
                 IOKit
                 Carbon
