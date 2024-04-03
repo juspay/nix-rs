@@ -29,6 +29,19 @@
           ];
         };
 
+        rust-project.overrideCraneArgs = oa: {
+          nativeBuildInputs = (oa.nativeBuildInputs or [ ]) ++ [
+            pkgs.nix
+          ];
+        };
+
+        rust-project.rustBuildInputs = with pkgs; [
+        ] ++ lib.optionals pkgs.stdenv.isDarwin (
+          with pkgs.darwin.apple_sdk.frameworks; [
+            IOKit
+          ]
+        );
+
         # Add your auto-formatters here.
         # cf. https://numtide.github.io/treefmt/
         treefmt.config = {
