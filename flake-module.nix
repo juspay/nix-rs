@@ -21,6 +21,14 @@ in
             default = [ ];
             description = "(Runtime) buildInputs for the cargo package";
           };
+          rust-project.craneArgs.nativeBuildInputs = lib.mkOption {
+            type = lib.types.listOf lib.types.package;
+            default = with pkgs; [
+              pkg-config
+              makeWrapper
+            ];
+            description = "nativeBuildInputs for the cargo package";
+          };
 
           rust-project.rustToolchain = lib.mkOption {
             type = lib.types.package;
@@ -63,13 +71,9 @@ in
             craneBuild = rec {
               args = {
                 inherit src;
-                inherit (config.rust-project.craneArgs) buildInputs;
+                inherit (config.rust-project.craneArgs) buildInputs nativeBuildInputs;
                 pname = name;
                 version = version;
-                nativeBuildInputs = with pkgs;[
-                  pkg-config
-                  makeWrapper
-                ];
                 # glib-sys fails to build on linux without this
                 # cf. https://github.com/ipetkov/crane/issues/411#issuecomment-1747533532
                 strictDeps = true;
