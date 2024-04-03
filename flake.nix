@@ -35,8 +35,7 @@
           ];
         };
 
-        rust-project.rustBuildInputs = with pkgs; [
-        ] ++ lib.optionals pkgs.stdenv.isDarwin (
+        rust-project.craneArgs.buildInputs = lib.optionals pkgs.stdenv.isDarwin (
           with pkgs.darwin.apple_sdk.frameworks; [
             IOKit
           ]

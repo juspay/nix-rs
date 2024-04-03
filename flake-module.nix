@@ -16,9 +16,9 @@ in
             description = "Override crane args for the rust-project package";
           };
 
-          rust-project.rustBuildInputs = lib.mkOption {
+          rust-project.craneArgs.buildInputs = lib.mkOption {
             type = lib.types.listOf lib.types.package;
-            default = [];
+            default = [ ];
             description = "(Runtime) buildInputs for the cargo package";
           };
 
@@ -63,9 +63,9 @@ in
             craneBuild = rec {
               args = {
                 inherit src;
+                inherit (config.rust-project.craneArgs) buildInputs;
                 pname = name;
                 version = version;
-                buildInputs = config.rust-project.rustBuildInputs;
                 nativeBuildInputs = with pkgs;[
                   pkg-config
                   makeWrapper
@@ -98,7 +98,7 @@ in
               '';
               buildInputs = [
                 pkgs.libiconv
-              ] ++ config.rust-project.rustBuildInputs;
+              ] ++ config.rust-project.craneArgs.buildInputs;
               packages = [
                 rustToolchain
               ];
