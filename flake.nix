@@ -31,7 +31,7 @@
 
         rust-project.overrideCraneArgs = oa: {
           nativeBuildInputs = (oa.nativeBuildInputs or [ ]) ++ [
-            pkgs.nix
+            pkgs.nix # Tests shell out to nix cli.
           ];
         };
 
