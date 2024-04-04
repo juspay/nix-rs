@@ -10,6 +10,8 @@ in
     perSystem = mkPerSystemOption
       ({ config, self', inputs', pkgs, system, ... }: {
         options = {
+          # TODO: Multiple projects
+          # TODO: Workspace crates
           rust-project.crane.args.buildInputs = lib.mkOption {
             type = lib.types.listOf lib.types.package;
             default = [ ];
@@ -25,11 +27,11 @@ in
           };
           rust-project.crane.lib = lib.mkOption {
             type = lib.types.lazyAttrsOf lib.types.raw;
-            default = (inputs.crane.mkLib pkgs).overrideToolchain config.rust-project.rustToolchain;
+            default = (inputs.crane.mkLib pkgs).overrideToolchain config.rust-project.toolchain;
           };
 
 
-          rust-project.rustToolchain = lib.mkOption {
+          rust-project.toolchain = lib.mkOption {
             type = lib.types.package;
             description = "Rust toolchain to use for the rust-project package";
             default = (pkgs.rust-bin.fromRustupToolchainFile (self + /rust-toolchain.toml)).override {
@@ -44,8 +46,6 @@ in
           rust-project.src = lib.mkOption {
             type = lib.types.path;
             description = "Source directory for the rust-project package";
-            # When filtering sources, we want to allow assets other than .rs files
-            # TODO: Don't hardcode these!
             default = lib.cleanSourceWith {
               src = self; # The original, unfiltered source
               filter = path: type:
@@ -59,7 +59,7 @@ in
           let
             cargoToml = builtins.fromTOML (builtins.readFile (self + /Cargo.toml));
             inherit (cargoToml.package) name version;
-            inherit (config.rust-project) rustToolchain crane src;
+            inherit (config.rust-project) toolchain crane src;
 
             # Crane builder for Dioxus projects projects
             craneBuild = rec {
@@ -91,13 +91,13 @@ in
             rustDevShell = pkgs.mkShell {
               shellHook = ''
                 # For rust-analyzer 'hover' tooltips to work.
-                export RUST_SRC_PATH="${rustToolchain}/lib/rustlib/src/rust/library";
+                export RUST_SRC_PATH="${toolchain}/lib/rustlib/src/rust/library";
               '';
               buildInputs = [
                 pkgs.libiconv
               ] ++ config.rust-project.crane.args.buildInputs;
               packages = [
-                rustToolchain
+                toolchain
               ];
             };
           in
