@@ -1,11 +1,11 @@
 [package]
-edition.workspace = true
 name = "nix_rs"
 # Important: remember to update the top-level Cargo.toml if updating major version
 version = "0.3.1"
-license.workspace = true
-repository.workspace = true
+license = "Apache-2.0"
+repository = "https://github.com/juspay/nix-rs"
 description = "Rust library for interacting with the Nix command"
+edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -13,18 +13,18 @@ crate-type = ["cdylib", "rlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cfg-if.workspace = true
+cfg-if = "1"
 regex = "1.9.3"
 os_info = "3.7.0"
-thiserror.workspace = true
-serde.workspace = true
-serde_json.workspace = true
-serde_with.workspace = true
+thiserror = "1.0"
+serde =  { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0"
+serde_with = { version = "3.2", features = ["json"] }
 tokio = { version = "1.29", features = ["full"] }
-tracing.workspace = true
+tracing = "0.1"
 url = { version = "2.4", features = ["serde"] }
 colored = { version = "2.0" }
 shell-words = { version = "1.1.0" }
 is_proc_translated = { version = "0.1.1" }
 sysinfo.version = "0.29.10"
-bytesize.workspace = true
+bytesize = { version = "1.3.0", features = ["serde"] }
