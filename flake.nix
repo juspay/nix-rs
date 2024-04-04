@@ -18,13 +18,10 @@
         inputs.rust-flake.flakeModules.default
       ];
       perSystem = { config, self', pkgs, lib, system, ... }: {
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-          overlays = [
-            inputs.rust-flake.inputs.rust-overlay.overlays.default
-          ];
-        };
-
+        imports = [
+          "${inputs.nixpkgs}/nixos/modules/misc/nixpkgs.nix"
+        ];
+        nixpkgs.hostPlatform = system;
 
         rust-project.crane.args = {
           buildInputs = lib.optionals pkgs.stdenv.isDarwin (
