@@ -3,7 +3,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
-    rust-flake.url = "github:juspay/rust-flake/init";
+    rust-flake.url = "github:juspay/rust-flake";
     rust-flake.inputs.nixpkgs.follows = "nixpkgs";
 
     # Dev tools
