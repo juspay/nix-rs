@@ -16,13 +16,9 @@
       imports = [
         inputs.treefmt-nix.flakeModule
         inputs.rust-flake.flakeModules.default
+        inputs.rust-flake.flakeModules.nixpkgs
       ];
       perSystem = { config, self', pkgs, lib, system, ... }: {
-        imports = [
-          "${inputs.nixpkgs}/nixos/modules/misc/nixpkgs.nix"
-        ];
-        nixpkgs.hostPlatform = system;
-
         rust-project.crane.args = {
           buildInputs = lib.optionals pkgs.stdenv.isDarwin (
             with pkgs.darwin.apple_sdk.frameworks; [
