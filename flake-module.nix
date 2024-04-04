@@ -10,12 +10,6 @@ in
     perSystem = mkPerSystemOption
       ({ config, self', inputs', pkgs, system, ... }: {
         options = {
-          rust-project.overrideCraneArgs = lib.mkOption {
-            type = lib.types.functionTo lib.types.attrs;
-            default = _: { };
-            description = "Override crane args for the rust-project package";
-          };
-
           rust-project.craneArgs.buildInputs = lib.mkOption {
             type = lib.types.listOf lib.types.package;
             default = [ ];
@@ -82,8 +76,7 @@ in
               buildArgs = args // {
                 inherit cargoArtifacts;
               };
-              package = craneLib.buildPackage
-                (buildArgs // config.rust-project.overrideCraneArgs buildArgs);
+              package = craneLib.buildPackage buildArgs;
 
               check = craneLib.cargoClippy (args // {
                 inherit cargoArtifacts;
