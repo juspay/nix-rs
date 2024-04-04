@@ -10,12 +10,12 @@ in
     perSystem = mkPerSystemOption
       ({ config, self', inputs', pkgs, system, ... }: {
         options = {
-          rust-project.craneArgs.buildInputs = lib.mkOption {
+          rust-project.crane.args.buildInputs = lib.mkOption {
             type = lib.types.listOf lib.types.package;
             default = [ ];
             description = "(Runtime) buildInputs for the cargo package";
           };
-          rust-project.craneArgs.nativeBuildInputs = lib.mkOption {
+          rust-project.crane.args.nativeBuildInputs = lib.mkOption {
             type = lib.types.listOf lib.types.package;
             default = with pkgs; [
               pkg-config
@@ -23,6 +23,11 @@ in
             ];
             description = "nativeBuildInputs for the cargo package";
           };
+          rust-project.crane.lib = lib.mkOption {
+            type = lib.types.lazyAttrsOf lib.types.raw;
+            default = (inputs.crane.mkLib pkgs).overrideToolchain config.rust-project.rustToolchain;
+          };
+
 
           rust-project.rustToolchain = lib.mkOption {
             type = lib.types.package;
@@ -36,11 +41,6 @@ in
             };
           };
 
-          rust-project.craneLib = lib.mkOption {
-            type = lib.types.lazyAttrsOf lib.types.raw;
-            default = (inputs.crane.mkLib pkgs).overrideToolchain config.rust-project.rustToolchain;
-          };
-
           rust-project.src = lib.mkOption {
             type = lib.types.path;
             description = "Source directory for the rust-project package";
@@ -50,7 +50,7 @@ in
               src = self; # The original, unfiltered source
               filter = path: type:
                 # Default filter from crane (allow .rs files)
-                (config.rust-project.craneLib.filterCargoSources path type)
+                (config.rust-project.crane.lib.filterCargoSources path type)
               ;
             };
           };
@@ -59,31 +59,31 @@ in
           let
             cargoToml = builtins.fromTOML (builtins.readFile (self + /Cargo.toml));
             inherit (cargoToml.package) name version;
-            inherit (config.rust-project) rustToolchain craneLib src;
+            inherit (config.rust-project) rustToolchain crane src;
 
             # Crane builder for Dioxus projects projects
             craneBuild = rec {
               args = {
                 inherit src;
-                inherit (config.rust-project.craneArgs) buildInputs nativeBuildInputs;
+                inherit (crane.args) buildInputs nativeBuildInputs;
                 pname = name;
                 version = version;
                 # glib-sys fails to build on linux without this
                 # cf. https://github.com/ipetkov/crane/issues/411#issuecomment-1747533532
                 strictDeps = true;
               };
-              cargoArtifacts = craneLib.buildDepsOnly args;
+              cargoArtifacts = crane.lib.buildDepsOnly args;
               buildArgs = args // {
                 inherit cargoArtifacts;
               };
-              package = craneLib.buildPackage buildArgs;
+              package = crane.lib.buildPackage buildArgs;
 
-              check = craneLib.cargoClippy (args // {
+              check = crane.lib.cargoClippy (args // {
                 inherit cargoArtifacts;
                 cargoClippyExtraArgs = "--all-targets --all-features -- --deny warnings";
               });
 
-              doc = craneLib.cargoDoc (args // {
+              doc = crane.lib.cargoDoc (args // {
                 inherit cargoArtifacts;
               });
             };
@@ -95,7 +95,7 @@ in
               '';
               buildInputs = [
                 pkgs.libiconv
-              ] ++ config.rust-project.craneArgs.buildInputs;
+              ] ++ config.rust-project.crane.args.buildInputs;
               packages = [
                 rustToolchain
               ];
