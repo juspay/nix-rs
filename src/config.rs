@@ -37,7 +37,6 @@ pub struct ConfigVal<T> {
 
 impl NixConfig {
     /// Get the output of `nix show-config`
-
     #[instrument(name = "show-config")]
     pub async fn from_nix(
         nix_cmd: &super::command::NixCmd,
@@ -46,6 +45,17 @@ impl NixConfig {
             .run_with_args_expecting_json(&["show-config", "--json"])
             .await?;
         Ok(v)
+    }
+
+    /// Is flakes and command features enabled?
+    pub fn is_flakes_enabled(&self) -> bool {
+        self.experimental_features
+            .value
+            .contains(&"nix-command".to_string())
+            && self
+                .experimental_features
+                .value
+                .contains(&"flakes".to_string())
     }
 }
 
