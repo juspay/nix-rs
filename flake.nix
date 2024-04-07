@@ -8,6 +8,11 @@
 
     # Dev tools
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    pre-commit-hooks-nix = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:
@@ -15,6 +20,7 @@
       systems = import inputs.systems;
       imports = [
         inputs.treefmt-nix.flakeModule
+        inputs.pre-commit-hooks-nix.flakeModule
         inputs.rust-flake.flakeModules.default
         inputs.rust-flake.flakeModules.nixpkgs
       ];
@@ -34,13 +40,33 @@
         # cf. https://numtide.github.io/treefmt/
         treefmt.config = {
           projectRootFile = "flake.nix";
+          flakeCheck = false; # pre-commit-hooks.nix checks this
           programs = {
             nixpkgs-fmt.enable = true;
             rustfmt.enable = true;
           };
         };
 
-        devShells.default = self'.devShells.nix_rs;
+        pre-commit = {
+          check.enable = true;
+          settings = {
+            hooks = {
+              treefmt.enable = true;
+              convco.enable = true;
+            };
+          };
+        };
+
+        devShells.default = pkgs.mkShell {
+          inputsFrom = [
+            self'.devShells.nix_rs
+            config.treefmt.build.devShell
+            config.pre-commit.devShell
+          ];
+          packages = [
+            config.pre-commit.settings.tools.convco
+          ];
+        };
       };
     };
 }
