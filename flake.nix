@@ -67,6 +67,7 @@
             config.pre-commit.devShell
           ];
           packages = [
+            pkgs.cargo-watch
             config.pre-commit.settings.tools.convco
           ];
         };
