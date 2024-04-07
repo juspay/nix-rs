@@ -113,6 +113,21 @@
         "type": "github"
       }
     },
+    "just-flake": {
+      "locked": {
+        "lastModified": 1712466955,
+        "narHash": "sha256-64uevmYbRDUib9RHwlhiu8X3aGhTohmpUOu4dS5xnNY=",
+        "owner": "juspay",
+        "repo": "just-flake",
+        "rev": "9cf97e2ea6d6000eacf555337bb0e37c63425149",
+        "type": "github"
+      },
+      "original": {
+        "owner": "juspay",
+        "repo": "just-flake",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1712122226,
@@ -208,6 +223,7 @@
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
+        "just-flake": "just-flake",
         "nixpkgs": "nixpkgs",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
         "rust-flake": "rust-flake",
