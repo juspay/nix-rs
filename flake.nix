@@ -8,6 +8,7 @@
 
     # Dev tools
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    just-flake.url = "github:juspay/just-flake";
     pre-commit-hooks-nix = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,6 +21,7 @@
       systems = import inputs.systems;
       imports = [
         inputs.treefmt-nix.flakeModule
+        inputs.just-flake.flakeModule
         inputs.pre-commit-hooks-nix.flakeModule
         inputs.rust-flake.flakeModules.default
         inputs.rust-flake.flakeModules.nixpkgs
@@ -61,6 +63,7 @@
           inputsFrom = [
             self'.devShells.nix_rs
             config.treefmt.build.devShell
+            self'.devShells.just
             config.pre-commit.devShell
           ];
           packages = [
