@@ -39,6 +39,8 @@ impl From<bool> for Refresh {
 
 impl Default for NixCmd {
     /// The default `nix` command with flakes already enabled.
+    ///
+    /// See [NixCmd::with_flakes] for a smarter version that adds feature options only when necessary.
     fn default() -> Self {
         Self {
             extra_experimental_features: vec!["nix-command".to_string(), "flakes".to_string()],
@@ -62,6 +64,23 @@ pub fn trace_cmd(cmd: &tokio::process::Command) {
 }
 
 impl NixCmd {
+    /// Return the [NixCmd] guaranteed to be flake-enabled
+    ///
+    /// Unlike [NixCmd::default], this method will add options only when necessary.
+    pub async fn with_flakes() -> Result<Self, NixCmdError> {
+        let cmd = Self::default();
+        let cfg = super::config::NixConfig::from_nix(&cmd).await?;
+        if cfg.is_flakes_enabled() {
+            let cmd = Self {
+                extra_experimental_features: vec![],
+                ..Default::default()
+            };
+            Ok(cmd)
+        } else {
+            Ok(cmd)
+        }
+    }
+
     /// Return a [Command] for this [NixCmd] configuration
     pub fn command(&self) -> Command {
         let mut cmd = Command::new("nix");
