@@ -7,14 +7,14 @@ use super::url::FlakeUrl;
 /// If the flake does not output the given attribute, return the [Default]
 /// value of `T`.
 pub async fn nix_eval_attr_json<T>(
+    cmd: &NixCmd,
     url: &FlakeUrl,
     default_if_missing: bool,
 ) -> Result<T, NixCmdError>
 where
     T: Default + serde::de::DeserializeOwned,
 {
-    let nix = NixCmd::default();
-    let result = nix
+    let result = cmd
         .run_with_args_expecting_json(&["eval", url.0.as_str(), "--json"])
         .await;
     match result {
