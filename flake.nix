@@ -38,6 +38,12 @@
           ];
         };
 
+        just-flake.features = {
+          treefmt.enable = true;
+          rust.enable = true;
+          convco.enable = true;
+        };
+
         # Add your auto-formatters here.
         # cf. https://numtide.github.io/treefmt/
         treefmt.config = {
@@ -63,7 +69,7 @@
           inputsFrom = [
             self'.devShells.nix_rs
             config.treefmt.build.devShell
-            self'.devShells.just
+            config.just-flake.outputs.devShell
             config.pre-commit.devShell
           ];
           packages = [
