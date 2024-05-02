@@ -27,6 +27,11 @@ pub struct NixCmd {
     pub refresh: Refresh,
 }
 
+/// The `nix-store` command
+/// See documentation for [nix-store](https://nixos.org/manual/nix/stable/command-ref/nix-store.html)
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
+pub struct NixStoreCmd;
+
 /// Whether to refresh the flake, by passing `--refresh` to nix
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub struct Refresh(bool);
@@ -61,6 +66,14 @@ impl Default for NixCmd {
 pub fn trace_cmd(cmd: &tokio::process::Command) {
     use colored::Colorize;
     tracing::info!("🐚 {}️", to_cli(cmd).bright_blue());
+}
+
+impl NixStoreCmd {
+    pub fn command(&self) -> Command {
+        let mut cmd = Command::new("nix-store");
+        cmd.kill_on_drop(true);
+        cmd
+    }
 }
 
 impl NixCmd {
