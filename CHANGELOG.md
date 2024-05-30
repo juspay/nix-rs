@@ -1,6 +1,6 @@
 # Changelog
 
-### [0.3.3](https://github.com/juspay/nix-rs/compare/0.3.2...HEAD) (2024-04-07)
+### [0.3.3](https://github.com/juspay/nix-rs/compare/0.3.2...0.3.3) (2024-04-17)
 
 #### Features
 
