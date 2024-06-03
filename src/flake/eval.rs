@@ -30,7 +30,12 @@ where
 fn error_is_missing_attribute(err: &NixCmdError) -> bool {
     match err {
         NixCmdError::CmdError(CommandError::ProcessFailed { stderr, .. }) => {
-            stderr.contains("does not provide attribute")
+            if let Some(stderr) = stderr {
+                if stderr.contains("does not provide attribute") {
+                    return true;
+                }
+            }
+            false
         }
         _ => false,
     }
