@@ -66,6 +66,12 @@ impl FlakeUrl {
         }
     }
 
+    /// Return the flake URL with the given attribute
+    pub fn with_attr(&self, attr: &str) -> Self {
+        let (url, _) = self.split_attr();
+        FlakeUrl(format!("{}#{}", url.0, attr))
+    }
+
     /// Return the flake URL pointing to the sub-flake
     pub fn sub_flake_url(&self, dir: String) -> FlakeUrl {
         if dir == "." {
@@ -252,6 +258,21 @@ mod tests {
         assert_eq!(
             url.sub_flake_url("dev".to_string()),
             FlakeUrl("git+https://example.org/my/repo?ref=master&dir=dev".to_string())
+        );
+    }
+
+    #[test]
+    fn test_with_attr() {
+        let url = FlakeUrl("github:srid/nixci".to_string());
+        assert_eq!(
+            url.with_attr("foo"),
+            FlakeUrl("github:srid/nixci#foo".to_string())
+        );
+
+        let url: FlakeUrl = "github:srid/nixci#foo".parse().unwrap();
+        assert_eq!(
+            url.with_attr("bar"),
+            FlakeUrl("github:srid/nixci#bar".to_string())
         );
     }
 }
