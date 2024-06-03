@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0](https://github.com/juspay/nix-rs/compare/0.3.3...0.4.0) (2024-06-03)
+
+### Features
+
+* add `NixCmd::run_with_args`
+([47f3170](https://github.com/juspay/nix-rs/commit/47f3170d57b72089eb977620217613571c52f456))
+* add `FlakeUrl::with_attr`
+([1ff343d](https://github.com/juspay/nix-rs/commit/1ff343d25f1a633c3caf2d6f723bbd1c9e352cbc))
+
 ### [0.3.3](https://github.com/juspay/nix-rs/compare/0.3.2...0.3.3) (2024-04-17)
 
 #### Features
