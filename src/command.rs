@@ -128,8 +128,24 @@ impl NixCmd {
         } else {
             let stderr = String::from_utf8(out.stderr)?;
             Err(CommandError::ProcessFailed {
-                stderr,
+                stderr: Some(stderr),
                 exit_code: out.status.code(),
+            })
+        }
+    }
+
+    /// Run nix with given args, letting stdout and stderr be that of parent process
+    pub async fn run_with_args(&self, args: &[&str]) -> Result<(), CommandError> {
+        let mut cmd = self.command();
+        cmd.args(args);
+        trace_cmd(&cmd);
+        let status = cmd.spawn()?.wait().await?;
+        if status.success() {
+            Ok(())
+        } else {
+            Err(CommandError::ProcessFailed {
+                stderr: None,
+                exit_code: status.code(),
             })
         }
     }
@@ -200,12 +216,15 @@ pub enum CommandError {
     #[error("Child process error: {0}")]
     ChildProcessError(#[from] std::io::Error),
     #[error(
-        "Process exited unsuccessfully. exit_code={:?} stderr={}",
+        "Process exited unsuccessfully. exit_code={:?}{}",
         exit_code,
-        stderr
+        match stderr {
+            Some(s) => format!(" stderr={}", s),
+            None => "".to_string()
+        },
     )]
     ProcessFailed {
-        stderr: String,
+        stderr: Option<String>,
         exit_code: Option<i32>,
     },
     #[error("Failed to decode command stderr: {0}")]
