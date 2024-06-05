@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.0](https://github.com/juspay/nix-rs/compare/0.4.0...0.5.0) (2024-06-05)
+
+### Features
+
+* Improve `with_flakes` to transform existing `NixCmd`
+([f936e54](https://github.com/juspay/nix-rs/commit/f936e5401d1bc9b82084cf7b49402a5ee1a3b733))
+* Add support for clap deriving
+([f61bd2c](https://github.com/juspay/nix-rs/commit/f61bd2c740a23a10bbb89dfbd3b77fd4b2a49bac))
+* Add `NixCmd::extra_access_tokens`
+([a287ab2](https://github.com/juspay/nix-rs/commit/a287ab2ad2d21db6ac89e4ce94c55446a02af241))
+
 ## [0.4.0](https://github.com/juspay/nix-rs/compare/0.3.3...0.4.0) (2024-06-03)
 
 ### Features
