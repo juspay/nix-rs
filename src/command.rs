@@ -90,7 +90,6 @@ impl NixCmd {
     }
 
     /// Run nix with given args, interpreting stdout as JSON, parsing into `T`
-
     pub async fn run_with_args_expecting_json<T>(&self, args: &[&str]) -> Result<T, NixCmdError>
     where
         T: serde::de::DeserializeOwned,
@@ -101,7 +100,6 @@ impl NixCmd {
     }
 
     /// Run nix with given args, interpreting parsing stdout, via [std::str::FromStr], into `T`
-
     pub async fn run_with_args_expecting_fromstr<T>(&self, args: &[&str]) -> Result<T, NixCmdError>
     where
         T: std::str::FromStr,
@@ -114,7 +112,6 @@ impl NixCmd {
     }
 
     /// Run nix with given args, returning stdout.
-
     pub async fn run_with_args_returning_stdout(
         &self,
         args: &[&str],
@@ -166,7 +163,6 @@ impl NixCmd {
 }
 
 /// Convert a Command to user-copyable CLI string
-
 fn to_cli(cmd: &tokio::process::Command) -> String {
     use std::ffi::OsStr;
     let program = cmd.as_std().get_program().to_string_lossy().to_string();
