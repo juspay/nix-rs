@@ -17,25 +17,27 @@ use tokio::process::Command;
 
 use tracing::instrument;
 
+#[cfg(feature = "clap")]
+use clap;
+
 /// The `nix` command's global options.
 ///
 /// See [available global
 /// options](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix#options)
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
+#[cfg_attr(feature = "clap", derive(clap::Parser))]
 pub struct NixCmd {
+    /// Append to the experimental-features setting of Nix.
+    #[cfg_attr(feature = "clap", arg(long))]
     pub extra_experimental_features: Vec<String>,
+
+    /// Append to the access-tokens setting of Nix.
+    #[cfg_attr(feature = "clap", arg(long))]
     pub extra_access_tokens: Vec<String>,
-    pub refresh: Refresh,
-}
 
-/// Whether to refresh the flake, by passing `--refresh` to nix
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
-pub struct Refresh(bool);
-
-impl From<bool> for Refresh {
-    fn from(b: bool) -> Self {
-        Self(b)
-    }
+    /// Consider all previously downloaded files out-of-date.
+    #[cfg_attr(feature = "clap", arg(long))]
+    pub refresh: bool,
 }
 
 impl Default for NixCmd {
@@ -46,7 +48,7 @@ impl Default for NixCmd {
         Self {
             extra_experimental_features: vec!["nix-command".to_string(), "flakes".to_string()],
             extra_access_tokens: vec![],
-            refresh: false.into(),
+            refresh: false,
         }
     }
 }
@@ -161,7 +163,7 @@ impl NixCmd {
             args.push("--extra-access-tokens".to_string());
             args.push(self.extra_access_tokens.join(" "));
         }
-        if self.refresh.0 {
+        if self.refresh {
             args.push("--refresh".to_string());
         }
         args
