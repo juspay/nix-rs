@@ -24,6 +24,7 @@ use tracing::instrument;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub struct NixCmd {
     pub extra_experimental_features: Vec<String>,
+    pub extra_access_tokens: Vec<String>,
     pub refresh: Refresh,
 }
 
@@ -44,6 +45,7 @@ impl Default for NixCmd {
     fn default() -> Self {
         Self {
             extra_experimental_features: vec!["nix-command".to_string(), "flakes".to_string()],
+            extra_access_tokens: vec![],
             refresh: false.into(),
         }
     }
@@ -154,6 +156,10 @@ impl NixCmd {
         if !self.extra_experimental_features.is_empty() {
             args.push("--extra-experimental-features".to_string());
             args.push(self.extra_experimental_features.join(" "));
+        }
+        if !self.extra_access_tokens.is_empty() {
+            args.push("--extra-access-tokens".to_string());
+            args.push(self.extra_access_tokens.join(" "));
         }
         if self.refresh.0 {
             args.push("--refresh".to_string());
