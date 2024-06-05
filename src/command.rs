@@ -68,21 +68,15 @@ pub fn trace_cmd(cmd: &tokio::process::Command) {
 }
 
 impl NixCmd {
-    /// Return the [NixCmd] guaranteed to be flake-enabled
-    ///
-    /// Unlike [NixCmd::default], this method will add options only when necessary.
-    pub async fn with_flakes() -> Result<Self, NixCmdError> {
-        let cmd = Self::default();
-        let cfg = super::config::NixConfig::from_nix(&cmd).await?;
-        if cfg.is_flakes_enabled() {
-            let cmd = Self {
-                extra_experimental_features: vec![],
-                ..Default::default()
-            };
-            Ok(cmd)
-        } else {
-            Ok(cmd)
+    /// Return a `NixCmd` with flakes enabled, if not already enabled.
+    pub async fn with_flakes(&self) -> Result<Self, NixCmdError> {
+        let cfg = super::config::NixConfig::from_nix(&Self::default()).await?;
+        let mut cmd = self.clone();
+        if !cfg.is_flakes_enabled() {
+            cmd.extra_experimental_features
+                .append(vec!["nix-command".to_string(), "flakes".to_string()].as_mut());
         }
+        Ok(cmd)
     }
 
     /// Return a [Command] for this [NixCmd] configuration
