@@ -27,15 +27,17 @@
         inputs.rust-flake.flakeModules.nixpkgs
       ];
       perSystem = { config, self', pkgs, lib, system, ... }: {
-        rust-project.crane.args = {
-          buildInputs = lib.optionals pkgs.stdenv.isDarwin (
-            with pkgs.darwin.apple_sdk.frameworks; [
-              IOKit
-            ]
-          );
-          nativeBuildInputs = with pkgs; [
-            nix # Tests need nix cli
-          ];
+        rust-project.crates."nix_rs" = {
+          crane.args = {
+            buildInputs = lib.optionals pkgs.stdenv.isDarwin (
+              with pkgs.darwin.apple_sdk.frameworks; [
+                IOKit
+              ]
+            );
+            nativeBuildInputs = with pkgs; [
+              nix # Tests need nix cli
+            ];
+          };
         };
 
         just-flake.features = {
@@ -67,7 +69,7 @@
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [
-            self'.devShells.nix_rs
+            self'.devShells.rust
             config.treefmt.build.devShell
             config.just-flake.outputs.devShell
             config.pre-commit.devShell
