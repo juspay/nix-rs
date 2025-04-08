@@ -20,7 +20,7 @@ thiserror = "1.0"
 serde =  { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0"
 serde_with = { version = "3.2", features = ["json"] }
-tokio = { version = "1.29", features = ["full"] }
+tokio = { version = "1.38", features = ["full"] }
 tracing = "0.1"
 url = { version = "2.4", features = ["serde"] }
 colored = { version = "2.0" }
